@@ -1,0 +1,61 @@
+/* Chat assistant. Uses the app's own colour variables, so it follows the light / dark theme. */
+.chat-launcher {
+  position: fixed; right: 22px; bottom: 22px; z-index: 60;
+  display: grid; place-items: center; width: 58px; height: 58px; border: 0; border-radius: 50%;
+  background: var(--grad); color: var(--acc-fg); cursor: pointer;
+  box-shadow: 0 12px 28px -8px var(--acc);
+  transition: transform .15s;
+}
+.chat-launcher:hover { transform: translateY(-2px) scale(1.04); }
+
+.chat-panel {
+  position: fixed; right: 22px; bottom: 94px; z-index: 60;
+  display: flex; flex-direction: column;
+  width: min(390px, calc(100vw - 32px)); height: min(600px, calc(100dvh - 130px));
+  background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--line); }
+.chat-head > div { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.chat-head .muted { font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--grad); color: var(--acc-fg); flex: none; }
+
+.chat-log { flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.chat-row { display: flex; }
+.chat-row.user { justify-content: flex-end; }
+.chat-bubble { max-width: 86%; padding: 9px 13px; border-radius: 14px; background: var(--panel-2); border: 1px solid var(--line); font-size: 14.5px; line-height: 1.5; }
+.chat-row.user .chat-bubble { background: var(--grad); color: var(--acc-fg); border-color: transparent; border-bottom-right-radius: 4px; }
+.chat-row.assistant .chat-bubble { border-bottom-left-radius: 4px; }
+.chat-bubble.error { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 45%, transparent); background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.chat-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+.chat-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+.chat-chips .chip { cursor: pointer; font: inherit; font-size: 13px; color: var(--fg); }
+
+.chat-input { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--line); }
+.chat-input textarea {
+  flex: 1; resize: none; max-height: 110px; padding: 9px 12px; font: inherit; font-size: 15px; color: var(--fg);
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 11px;
+  field-sizing: content;
+}
+.chat-input textarea:focus-visible { outline: 2px solid var(--acc-2); outline-offset: 1px; }
+.chat-send { padding: 10px 13px; }
+.chat-count { font-size: 12px; text-align: right; padding: 0 14px 8px; }
+
+.typing { display: inline-flex; gap: 4px; padding: 4px 2px; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: chat-dot 1s infinite ease-in-out; }
+.typing i:nth-child(2) { animation-delay: .15s; }
+.typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes chat-dot { 0%, 80%, 100% { opacity: .3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) {
+  .typing i { animation: none; opacity: .7; }
+  .chat-launcher { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .chat-launcher { right: 14px; bottom: 14px; }
+  .chat-panel { right: 8px; left: 8px; bottom: 82px; width: auto; height: min(70dvh, 560px); }
+}
+/* the printable receipt must not carry the chat */
+@media print { .chat-launcher, .chat-panel { display: none; } }

@@ -1,0 +1,43 @@
+/* AI panels: search / recommendations, study helper, course draft. Uses the app's colour variables. */
+.ai-picks, .ai-study { margin-bottom: 20px; }
+.ai-picks h2, .ai-study h2, .ai-draft h2 { display: flex; align-items: center; gap: 8px; }
+.ai-picks h2 svg, .ai-study h2 svg, .ai-draft h2 svg { color: var(--gold, var(--acc-2)); }
+
+.ai-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.ai-row input, .ai-select select {
+  flex: 1 1 260px; min-width: 0; padding: 11px 14px; font: inherit; color: var(--fg);
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 11px;
+}
+.ai-row input:focus-visible, .ai-select select:focus-visible { outline: 2px solid var(--acc-2); outline-offset: 1px; }
+.ai-select { display: flex; flex-direction: column; gap: 4px; flex: 1 1 260px; }
+.ai-select select { flex: none; }
+.ai-summary { margin-top: 14px; }
+.ai-error { color: var(--danger); margin-top: 12px; }
+.ai-note { font-size: 13px; margin-top: 12px; }
+
+.ai-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+.ai-pick { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); color: inherit; text-decoration: none; transition: border-color .2s, transform .2s; }
+.ai-pick:hover, .ai-pick:focus-visible { border-color: var(--acc); transform: translateY(-2px); }
+.ai-pick-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ai-pick-meta { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+@media (max-width: 640px) { .ai-pick { flex-direction: column; align-items: flex-start; } .ai-pick-meta { justify-content: flex-start; } }
+
+.ai-tabs { display: flex; gap: 8px; margin: 12px 0 16px; }
+.ai-tab { padding: 7px 16px; font: inherit; font-size: 14px; color: var(--fg); background: var(--panel-2); border: 1px solid var(--line); border-radius: 99px; cursor: pointer; }
+.ai-tab[aria-selected='true'] { background: var(--grad); color: var(--acc-fg); border-color: transparent; font-weight: 600; }
+
+.quiz { list-style: none; counter-reset: q; padding: 0; margin: 18px 0 0; display: grid; gap: 20px; }
+.quiz > li { counter-increment: q; }
+.quiz legend::before { content: counter(q) '. '; }
+.quiz fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.quiz legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+.quiz-opt { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; margin-top: 6px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.quiz-opt input { margin-top: 4px; }
+.quiz-opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.quiz-opt.wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+.quiz-mark { margin-left: auto; font-size: 12px; white-space: nowrap; }
+.quiz-why { margin-top: 8px; font-size: 14px; }
+.quiz-foot { margin-top: 18px; }
+
+.ai-answer { margin-top: 14px; padding: 14px 16px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; }
+.ai-draft .muted { margin-bottom: 12px; }

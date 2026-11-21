@@ -1,0 +1,157 @@
+/* ==========================================================================
+   3D student / course theme. Loaded after styles.css, so it only adds depth and
+   motion on top of the existing look (same colour variables, light + dark).
+   Everything that moves stops when the user asks for reduced motion.
+   ========================================================================== */
+:root {
+  --gold: #fbbf24;
+  --edge: rgba(255, 255, 255, .07);
+  --depth: inset 0 1px 0 var(--edge), 0 22px 44px -22px rgba(0, 0, 0, .65);
+}
+:root[data-theme='light'] {
+  --gold: #d99a06;
+  --edge: rgba(255, 255, 255, .9);
+  --depth: inset 0 1px 0 var(--edge), 0 20px 40px -22px rgba(60, 60, 140, .35);
+}
+
+/* ---------- layers: scene behind, app on top ---------- */
+.shell, .auth-wrap { position: relative; z-index: 1; }
+.scene3d { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; perspective: 1100px; }
+
+.sc-grid {
+  position: absolute; left: -40%; right: -40%; bottom: -8%; height: 62%;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(520px) rotateX(64deg); transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 88%); mask-image: linear-gradient(to top, #000, transparent 88%);
+  opacity: .6;
+}
+.sc-float { position: absolute; opacity: .42; transform-style: preserve-3d; animation: floaty 11s ease-in-out infinite; }
+:root[data-theme='light'] .sc-float { opacity: .4; }
+.sc-float.f1 { right: 5%;  top: 12%;    --r0: -48deg; }
+.sc-float.f2 { right: 17%; bottom: 14%; --r0: 38deg;  animation-delay: -3s; animation-duration: 13s; }
+.sc-float.f3 { left: 2%;   top: 58%;    --r0: -62deg; animation-delay: -6s; filter: blur(2px); }
+.sc-float.f4 { right: 31%; top: 3%;     --r0: 56deg;  animation-delay: -8s; animation-duration: 15s; filter: blur(1.5px); }
+.sc-float .book { transform: none; }
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotateY(var(--r0)) rotateX(16deg); }
+  50%      { transform: translateY(-26px) rotateY(calc(var(--r0) + 26deg)) rotateX(-6deg); }
+}
+
+/* ---------- the book ---------- */
+.book { --w: 120px; --h: 160px; --d: 30px; position: relative; width: var(--w); height: var(--h); transform-style: preserve-3d; transform: rotateY(-28deg) rotateX(4deg); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+.book.sm { --w: 92px;  --h: 124px; --d: 24px; }
+.book.lg { --w: 168px; --h: 224px; --d: 40px; }
+.book > i, .book > .bk-front { position: absolute; display: block; }
+.bk-front {
+  inset: 0; transform: translateZ(calc(var(--d) / 2)); border-radius: 3px 9px 9px 3px; padding: 12% 11% 10% 17%;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 6px; overflow: hidden; color: #fff;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, .34) 0, rgba(255, 255, 255, .16) 7%, transparent 11%),
+    linear-gradient(135deg, hsl(var(--h1) 82% 58%), hsl(var(--h2) 78% 40%));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+}
+.bk-front::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, rgba(255, 255, 255, .28), transparent 38%); pointer-events: none; }
+.bk-glyph { font-weight: 700; font-size: calc(var(--h) * .2); line-height: 1; text-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+.bk-title { font-weight: 700; font-size: calc(var(--h) * .08); line-height: 1.15; letter-spacing: -.01em; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 6px rgba(0, 0, 0, .4); }
+.bk-level { align-self: flex-start; font-size: calc(var(--h) * .07); padding: 1px 7px; border-radius: 99px; background: rgba(0, 0, 0, .28); }
+.bk-back   { width: var(--w); height: var(--h); transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); background: hsl(var(--h2) 70% 26%); border-radius: 3px 9px 9px 3px; }
+.bk-left   { width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2); transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); background: linear-gradient(180deg, hsl(var(--h1) 75% 38%), hsl(var(--h2) 75% 28%)); }
+.bk-right  { width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2); transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); background: repeating-linear-gradient(180deg, #f5efe0 0 2px, #d8cfb8 2px 3px); }
+.bk-top    { width: var(--w); height: var(--d); top: calc((var(--h) - var(--d)) / 2); transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); background: repeating-linear-gradient(90deg, #f5efe0 0 2px, #d8cfb8 2px 3px); }
+.bk-bottom { width: var(--w); height: var(--d); top: calc((var(--h) - var(--d)) / 2); transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); background: #cfc6ad; }
+
+/* ---------- tilting cards ---------- */
+.tilt { position: relative; transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .18s ease-out, border-color .2s, box-shadow .25s; will-change: transform; }
+.tilt::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, .16), transparent 55%); }
+.tilt:hover::after { opacity: 1; }
+
+/* ---------- course cards ---------- */
+.course-card.tilt:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px); box-shadow: inset 0 1px 0 var(--edge), 0 30px 50px -24px var(--acc); }
+.course-stage {
+  position: relative; height: 196px; margin: -6px -6px 12px; display: grid; place-items: center; border-radius: 14px; transform-style: preserve-3d;
+  background: radial-gradient(ellipse at 50% 92%, color-mix(in srgb, var(--acc) 34%, transparent), transparent 62%), linear-gradient(180deg, color-mix(in srgb, var(--acc) 9%, transparent), transparent);
+}
+.course-stage::after { content: ''; position: absolute; bottom: 20px; width: 120px; height: 16px; border-radius: 50%; background: rgba(0, 0, 0, .42); filter: blur(9px); }
+.course-stage .course-top { position: absolute; top: 8px; left: 8px; right: 8px; z-index: 2; }
+.course-stage .book { transform: translateZ(34px) rotateY(-28deg) rotateX(4deg); z-index: 1; }
+.course-card:hover .course-stage .book { transform: translateZ(46px) rotateY(-12deg) rotateX(2deg) translateY(-6px); }
+
+/* ---------- depth on the rest of the UI ---------- */
+.panel, .stat, .course-card, .auth-card { box-shadow: var(--depth); }
+.stat { transition: transform .25s, box-shadow .25s; }
+.stat:hover { transform: perspective(800px) rotateX(4deg) translateY(-4px); box-shadow: inset 0 1px 0 var(--edge), 0 26px 40px -24px var(--acc); }
+.price { color: var(--gold); }
+.btn.primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--acc) 55%, #000), 0 14px 26px -10px var(--acc); }
+.btn.primary:hover:not(:disabled) { transform: translateY(-2px); }
+.btn.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--acc) 55%, #000), 0 6px 12px -8px var(--acc); }
+.brand-mark { box-shadow: 0 4px 0 rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .45); transform: rotate(-6deg); }
+.sidebar { box-shadow: 18px 0 40px -28px rgba(0, 0, 0, .6); }
+
+/* ---------- dashboard hero ---------- */
+.hero3d { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: 12px; padding: 26px 30px; margin-bottom: 22px; overflow: hidden;
+  background-image: linear-gradient(120deg, color-mix(in srgb, var(--acc) 16%, transparent), transparent 70%); }
+.hero3d h2 { font-size: clamp(26px, 3.4vw, 38px); letter-spacing: -.035em; line-height: 1.1; margin: 4px 0 10px; }
+.hero3d h2 b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero3d .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.hero-stage { position: relative; height: 270px; perspective: 900px; display: grid; place-items: center; }
+.turntable { position: relative; width: 0; height: 0; transform-style: preserve-3d; animation: spin-books 24s linear infinite; }
+.tt-item { position: absolute; left: -60px; top: -92px; transform-style: preserve-3d; transform: rotateY(var(--a)) translateZ(150px); }
+.tt-item .book { transform: none; }
+.tt-floor { position: absolute; bottom: 14px; width: 330px; height: 56px; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--acc) 38%, transparent), transparent 70%); filter: blur(4px); }
+@keyframes spin-books { from { transform: rotateX(-9deg) rotateY(0deg); } to { transform: rotateX(-9deg) rotateY(360deg); } }
+
+/* ---------- course page ---------- */
+.hero-book { perspective: 800px; padding: 6px 28px 6px 6px; align-self: center; }
+.hero-book .book { transform: rotateY(-24deg) rotateX(4deg); }
+.hero-book:hover .book { transform: rotateY(-8deg) rotateX(2deg); }
+
+/* ---------- sign in / register ---------- */
+.auth-wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.auth-hero { display: none; }
+@media (min-width: 940px) {
+  .auth-wrap { grid-template-columns: minmax(0, 520px) 420px; justify-content: center; gap: 56px; }
+  .auth-hero { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .auth-hero h2 { font-size: clamp(34px, 3.8vw, 48px); letter-spacing: -.04em; line-height: 1.05; }
+  .auth-hero h2 b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .auth-hero .features { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+}
+
+/* ---------- graduation cap ---------- */
+.cap-stage { position: relative; width: 340px; height: 290px; perspective: 1000px; align-self: center; margin-bottom: 6px; }
+.cap-bob { position: absolute; inset: 0; transform-style: preserve-3d; animation: cap-bob 5s ease-in-out infinite; }
+.cap { position: absolute; left: 50%; top: 52%; width: 0; height: 0; transform-style: preserve-3d; animation: cap-spin 18s linear infinite; }
+.cap-base { position: absolute; left: -50px; top: -2px; width: 100px; height: 52px; transform-style: preserve-3d; }
+.cap-base i { position: absolute; display: block; }
+.cb-front  { width: 100px; height: 52px; transform: translateZ(50px); background: linear-gradient(180deg, #2b2f7a, #1b1e52); }
+.cb-back   { width: 100px; height: 52px; transform: rotateY(180deg) translateZ(50px); background: #15173f; }
+.cb-left   { width: 100px; height: 52px; transform: rotateY(-90deg) translateZ(50px); background: linear-gradient(180deg, #252970, #181b49); }
+.cb-right  { width: 100px; height: 52px; transform: rotateY(90deg) translateZ(50px); background: linear-gradient(180deg, #252970, #181b49); }
+.cb-bottom { width: 100px; height: 100px; top: -24px; transform: rotateX(-90deg) translateZ(26px); background: #101232; }
+.cap-board { position: absolute; left: -85px; top: -85px; width: 170px; height: 170px; transform-style: preserve-3d; transform: translateY(-12px) rotateX(90deg) rotateZ(45deg);
+  background: linear-gradient(135deg, #3a3fa0, #1d2062); border: 2px solid rgba(255, 255, 255, .16); box-shadow: inset 0 0 30px rgba(255, 255, 255, .08); }
+.cap-board::before { content: ''; position: absolute; inset: -2px; background: #0f1130; transform: translateZ(-9px); }
+.cap-button { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe08a, var(--gold)); transform: translateZ(3px); box-shadow: 0 0 10px rgba(251, 191, 36, .6); }
+.cap-cord { position: absolute; left: 50%; top: 50%; width: 118px; height: 3px; transform-origin: 0 50%; transform: translateZ(2px) rotate(45deg); background: linear-gradient(90deg, #ffe08a, var(--gold)); transform-style: preserve-3d; }
+.cap-tassel { position: absolute; right: -4px; top: 0; width: 9px; height: 58px; transform-origin: 50% 0; transform: rotateX(-90deg); background: linear-gradient(180deg, var(--gold), #b97f06 70%, #7a5300); border-radius: 2px 2px 5px 5px; }
+.cap-shadow { position: absolute; left: 50%; bottom: 8px; width: 210px; height: 30px; margin-left: -105px; border-radius: 50%; background: rgba(0, 0, 0, .4); filter: blur(12px); animation: cap-shadow 5s ease-in-out infinite; }
+@keyframes cap-spin { from { transform: rotateX(-20deg) rotateY(0deg); } to { transform: rotateX(-20deg) rotateY(360deg); } }
+@keyframes cap-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes cap-shadow { 0%, 100% { transform: scale(1); opacity: .4; } 50% { transform: scale(.86); opacity: .28; } }
+
+/* ---------- small screens, reduced motion, print ---------- */
+@media (max-width: 820px) {
+  .sc-float.f3, .sc-float.f4 { display: none; }
+  .sc-float { opacity: .3; }
+  .hero3d { grid-template-columns: 1fr; padding: 22px; }
+  .hero-stage { height: 220px; transform: scale(.85); }
+  .hero-book { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-float, .turntable, .cap, .cap-bob, .cap-shadow { animation: none; }
+  .sc-float { transform: rotateY(var(--r0)) rotateX(8deg); }
+  .turntable { transform: rotateX(-9deg) rotateY(-20deg); }
+  .cap { transform: rotateX(-20deg) rotateY(-30deg); }
+  .tilt, .book, .stat, .btn { transition: none; }
+}
+@media print { .scene3d { display: none; } }
